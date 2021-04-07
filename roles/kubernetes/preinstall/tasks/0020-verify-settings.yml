@@ -299,14 +299,13 @@
     msg: "download_run_once not supported for Flatcar Container Linux"
   when: download_run_once or download_force_cache
 
-- name: Ensure minimum containerd version
-  assert:
-    that: containerd_version is version(containerd_min_version_required, '>=')
-    msg: "containerd_version is too low. Minimum version {{ containerd_min_version_required }}"
-  run_once: yes
-  when:
-    - containerd_version != 'latest'
-    - container_manager == 'containerd'
+# - name: Ensure minimum containerd version
+#   assert:
+#     that: containerd_version is version(containerd_min_version_required, '>=')
+#     msg: "containerd_version is too low. Minimum version {{ containerd_min_version_required }}"
+#   run_once: yes
+#   when:
+#     - container_manager == 'containerd'
 
 - name: Stop if using deprecated containerd_config variable
   assert:

@@ -1,4 +1,5 @@
 version = 2
+root = "/data/containerd"
 
 [grpc]
   max_recv_message_size = {{ containerd_grpc_max_recv_message_size | default(16777216) }}
@@ -15,6 +16,9 @@ version = 2
   [plugins."io.containerd.grpc.v1.cri"]
     sandbox_image = "{{ pod_infra_image_repo }}:{{ pod_infra_image_tag }}"
     max_container_log_line_size = {{ containerd_max_container_log_line_size }}
+    enable_selinux = true
+    max_concurrent_downloads = 30
+    disable_hugetlb_controller= false
     [plugins."io.containerd.grpc.v1.cri".containerd]
       default_runtime_name = "{{ containerd_default_runtime | default('runc') }}"
       snapshotter = "{{ containerd_snapshotter | default('overlayfs') }}"
@@ -39,3 +43,6 @@ version = 2
         [plugins."io.containerd.grpc.v1.cri".registry.mirrors."{{ registry }}"]
           endpoint = ["{{ ([ addr ] | flatten ) | join('","') }}"]
 {% endfor %}
+
+[cgroup]
+  path = "/systemd/containerd.slice"

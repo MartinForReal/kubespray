@@ -39,9 +39,6 @@ etcd:
 {% for endpoint in etcd_access_addresses.split(',') %}
       - {{ endpoint }}
 {% endfor %}
-      caFile: {{ etcd_cert_dir }}/{{ kube_etcd_cacert_file }}
-      certFile: {{ etcd_cert_dir }}/{{ kube_etcd_cert_file }}
-      keyFile: {{ etcd_cert_dir }}/{{ kube_etcd_key_file }}
 {% elif etcd_kubeadm_enabled %}
   local:
     imageRepository: "{{ etcd_image_repo | regex_replace("/etcd$","") }}"
@@ -90,12 +87,6 @@ networking:
   dnsDomain: {{ dns_domain }}
   serviceSubnet: "{{ kube_service_addresses }}{{ ',' + kube_service_addresses_ipv6 if enable_dual_stack_networks else '' }}"
   podSubnet: "{{ kube_pods_subnet }}{{ ',' + kube_pods_subnet_ipv6 if enable_dual_stack_networks else '' }}"
-{% if kube_feature_gates %}
-featureGates:
-{%   for feature in kube_feature_gates %}
-  {{ feature|replace("=", ": ") }}
-{%   endfor %}
-{% endif %}
 kubernetesVersion: {{ kube_version }}
 {% if kubeadm_config_api_fqdn is defined %}
 controlPlaneEndpoint: {{ kubeadm_config_api_fqdn }}:{{ loadbalancer_apiserver.port | default(kube_apiserver_port) }}
@@ -119,8 +110,8 @@ apiServer:
     bind-address: {{ kube_apiserver_bind_address }}
 {% if kube_apiserver_insecure_port|string != "0" %}
     insecure-bind-address: {{ kube_apiserver_insecure_bind_address }}
-{% endif %}
     insecure-port: "{{ kube_apiserver_insecure_port }}"
+{% endif %}
 {% if kube_apiserver_enable_admission_plugins|length > 0 %}
     enable-admission-plugins: {{ kube_apiserver_enable_admission_plugins | join(',') }}
 {% endif %}

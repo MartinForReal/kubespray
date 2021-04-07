@@ -18,7 +18,7 @@ common_required_pkgs:
 # Set to true if your network does not support IPv6
 # This maybe necessary for pulling Docker images from
 # GCE docker repository
-disable_ipv6_dns: false
+disable_ipv6_dns: true
 
 kube_cert_group: kube-cert
 kube_config_dir: /etc/kubernetes
